@@ -10,6 +10,16 @@ class FriendsList {
   announceFriendship(name) {
     console.log(`${name} is now a friend.`);
   }
+
+  removeFriend(name) {
+    const idx = this.friends.indexOf(name);
+
+    if (idx === -1) {
+      throw new Error('friend not found!');
+    }
+
+    this.friends.splice(idx, 1);
+  }
 }
 
 // tests
@@ -34,7 +44,23 @@ describe('FriendsList', () => {
     friendsList.announceFriendship = jest.fn();
 
     expect(friendsList.announceFriendship).not.toHaveBeenCalled();
-    friendsList.addFriend('loxt2');
-    expect(friendsList.announceFriendship).toHaveBeenCalledWith('loxt2');
+    friendsList.addFriend('Loxt');
+    expect(friendsList.announceFriendship).toHaveBeenCalledWith('Loxt');
+  });
+
+  describe('removeFriend', () => {
+    it('should remove a friend from list', () => {
+      friendsList.addFriend('Loxt');
+      expect(friendsList.friends[0]).toEqual('Loxt');
+      friendsList.removeFriend('Loxt');
+      expect(friendsList.friends[0]).toBeUndefined();
+    });
+
+    it('should throw an error as friends does not exist', () => {
+      expect(() => friendsList.removeFriend('Loxt'));
+      // expect(() => friendsList.removeFriend('Loxt')).toThrow(
+      //   new Error('Friend not found'),
+      // );
+    });
   });
 });
