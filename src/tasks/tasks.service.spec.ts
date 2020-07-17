@@ -4,12 +4,14 @@ import { TaskRepository } from './task.repository';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { NotFoundException } from '@nestjs/common';
+import { create } from 'domain';
 
 const mockUser = { id: 12, username: 'Loxt' };
 
 const mockTaskRepository = () => ({
   getTasks: jest.fn(),
   findOne: jest.fn(),
+  createTask: jest.fn(),
 });
 
 describe('TasksService', () => {
@@ -70,6 +72,24 @@ describe('TasksService', () => {
       expect(tasksService.getTaskById(1, mockUser)).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+  describe('createTask', () => {
+    it('should calls taskRepository.create() and returns the result', async function () {
+      taskRepository.createTask.mockResolvedValue('someTask');
+      expect(taskRepository.createTask).not.toHaveBeenCalled();
+
+      const createTaskDto = {
+        title: 'Test task',
+        description: 'Test description',
+      };
+
+      const result = await tasksService.createTask(createTaskDto, mockUser);
+      expect(taskRepository.createTask).toHaveBeenCalledWith(
+        createTaskDto,
+        mockUser,
+      );
+      expect(result).toEqual('someTask');
     });
   });
 });
