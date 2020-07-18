@@ -42,10 +42,7 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  private static async hashPassword(
-    password: string,
-    salt: string,
-  ): Promise<string> {
+  static async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
   }
 }
