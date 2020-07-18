@@ -4,6 +4,7 @@ import { TaskRepository } from './task.repository';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { NotFoundException } from '@nestjs/common';
+import exp = require('constants');
 
 const mockUser = { id: 12, username: 'Loxt' };
 
@@ -111,6 +112,28 @@ describe('TasksService', () => {
       expect(tasksService.deleteTask(1, mockUser)).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('updateTaskStatus', () => {
+    it('should update a task status', async function () {
+      const save = jest.fn().mockResolvedValue(true);
+
+      tasksService.getTaskById = jest.fn().mockResolvedValue({
+        status: TaskStatus.OPEN,
+        save,
+      });
+
+      expect(tasksService.getTaskById).not.toHaveBeenCalled();
+      expect(save).not.toHaveBeenCalled();
+      const result = await tasksService.updateTaskStatus(
+        1,
+        TaskStatus.DONE,
+        mockUser,
+      );
+      expect(tasksService.getTaskById).toHaveBeenCalled();
+      expect(save).toHaveBeenCalled();
+      expect(result.status).toEqual(TaskStatus.DONE);
     });
   });
 });
