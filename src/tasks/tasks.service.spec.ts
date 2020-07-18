@@ -4,7 +4,6 @@ import { TaskRepository } from './task.repository';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { NotFoundException } from '@nestjs/common';
-import exp = require('constants');
 
 const mockUser = { id: 12, username: 'Loxt' };
 
